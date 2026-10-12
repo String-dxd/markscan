@@ -2,7 +2,8 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OMS Reader — Your student directory</title>
+<title>MarkScan — Optical mark sheet scanner</title>
+<meta name="description" content="Grade optical mark sheets locally in your browser with your own student directory.">
 
 <!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -275,24 +276,25 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
 #instructionsDialog .instructions-heading form { margin:0; flex-shrink:0; }
 .instructions-heading button { width:30px; height:30px; padding:0; display:grid; place-items:center; }
 </style>
+<link rel="stylesheet" href="string-theme.css">
 </head>
-<body>
+<body class="scanner-page">
 <header class="app-header">
   <div class="app-header-inner">
-    <div class="brand">
-      <img class="markscan-logo" src="./markscanlogosmall.png" alt="MarkScan logo" onerror="this.hidden=true; this.nextElementSibling.hidden=false">
-      <span class="brand-logo-fallback" hidden>MarkScan</span>
+    <a class="brand" href="index.html" aria-label="MarkScan scanner home">
+      <img class="string-wordmark" src="assets/brand/string-primary-dark.svg" alt="String">
+      <span class="brand-divider" aria-hidden="true"></span>
       <div class="brand-copy">
-        <h1>Optical Mark Sheet Scanner</h1>
-        <p>Grade answer sheets using your own student directory</p>
+        <h1>MarkScan</h1>
+        <p>Optical mark sheet scanner</p>
       </div>
-    </div>
+    </a>
     <div class="top-actions">
       <span class="privacy-note">Your uploaded data stays in your browser</span>
       <a class="link-pill" href="metrics.html">Usage metrics</a>
       <button id="openInstructions" type="button">Instructions</button>
       <button id="openTutorial" type="button" aria-controls="tutorialGuide" aria-expanded="false">Guided setup</button>
-      <button id="startAfresh" type="button" style="border-color:#fb7185;color:#fda4af">Start afresh</button>
+      <button id="startAfresh" class="danger-button" type="button">Start afresh</button>
     </div>
   </div>
 </header>
@@ -358,7 +360,7 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
 
 <main class="app-shell">
 
-<p class="small" role="note" style="margin:0 0 16px;padding:12px 16px;border:1px solid var(--line);border-radius:12px"><strong>Your data stays on your device.</strong> Uploaded student lists and scanned answer sheets are processed locally in your browser. Their contents are not uploaded to the internet or sent to a server. Saved student lists, answer keys, and results are stored only in this browser, not in cloud storage. Use <strong>Start afresh</strong> to clear this app’s saved data. Downloaded files remain on your device.</p>
+<p class="small data-safety-note" role="note"><span><strong>Your data stays on your device.</strong> Uploaded student lists and scanned answer sheets are processed locally in your browser. Their contents are not uploaded to the internet or sent to a server. Saved student lists, answer keys, and results are stored only in this browser, not in cloud storage. Use <strong>Start afresh</strong> to clear this app’s saved data. Downloaded files remain on your device.</span></p>
 
 <details id="studentDirectory" class="card" style="margin-bottom:16px" aria-labelledby="studentDirectoryTitle">
   <summary class="directory-summary"><h2 id="studentDirectoryTitle" class="step-heading"><span class="step-number">1</span> Upload student directory <span class="small">First-time setup</span></h2><span class="directory-toggle-hint" aria-hidden="true"></span></summary>
@@ -400,18 +402,28 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
 
     <h2 class="step-heading step-divider"><span class="step-number">3</span> Upload answer sheets</h2>
     <p class="small" style="margin:6px 0 0">Select or drop your scanned PDF files below, then click <strong>Process PDFs</strong>. Files are read locally; their contents are not uploaded to a server.</p>
-    <div id="drop" class="drop" style="margin-top:10px">
-      <div style="text-align:center">
-        <div class="drop-icon" aria-hidden="true">↥</div>
-        <div class="drop-title">Drop PDF files here</div>
-        <div class="drop-separator">Select one or more scanned answer sheets</div>
-        <!-- Hide the native file input to avoid duplicate UI -->
-        <input id="file" type="file" accept="application/pdf" multiple style="display:none">
-        <div style="margin-top:8px">
-          <button id="btnPickPDF" class="small">Choose PDF files</button>
-        </div>
+    <div id="drop" class="drop" role="button" tabindex="0" aria-label="Choose PDF answer sheets or drag and drop them here" aria-describedby="uploadHelp uploadFeedback">
+      <div class="drop-content drop-default">
+        <div class="drop-icon" aria-hidden="true">↑</div>
+        <div class="drop-title"><span id="btnPickPDF" class="upload-link">Choose PDF files</span> or drag and drop here</div>
+        <div id="uploadHelp" class="drop-separator">Add one or more scanned answer sheets</div>
+        <div class="upload-meta" aria-hidden="true"><span>PDF only</span><span>Multiple files supported</span><span>Processed locally</span></div>
       </div>
+      <div class="drop-content drop-active" aria-hidden="true">
+        <div class="drop-icon">↓</div>
+        <div class="drop-title">Drop the PDF files here</div>
+        <div class="drop-separator">Release to add them to the processing queue</div>
+      </div>
+      <input id="file" type="file" accept="application/pdf,.pdf" multiple hidden>
     </div>
+    <p id="uploadFeedback" class="upload-feedback" role="status" aria-live="polite"></p>
+    <section id="pdfQueue" class="upload-queue" aria-labelledby="pdfQueueTitle" hidden>
+      <div class="upload-queue-header">
+        <strong id="pdfQueueTitle">PDF queue</strong>
+        <button id="clearPDFQueue" type="button">Clear queue</button>
+      </div>
+      <ul id="pdfQueueList" class="upload-list"></ul>
+    </section>
 
     <!-- Processing and download controls -->
     <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">
@@ -689,6 +701,7 @@ async function restorePDFPreviews() {
     currentPage = Math.max(1, Math.min(saved.currentPage || 1, totalPages));
     document.getElementById('previewMode').value = saved.mode || 'marked';
     document.getElementById('btnProcess').disabled = false;
+    renderPDFQueue();
     updateStudentArea();
     syncIntegratedReview();
     await renderPreview();
@@ -800,11 +813,114 @@ function saveStoredResults() {
 
 /* ===== UI wiring ===== */
 function setStatus(s){ statusEl.textContent = s; }
-["dragenter","dragover"].forEach(evt => $("#drop").addEventListener(evt, e=>{ e.preventDefault(); $("#drop").classList.add("dragover"); }));
-["dragleave","drop"].forEach(evt => $("#drop").addEventListener(evt, e=>{ e.preventDefault(); $("#drop").classList.remove("dragover"); }));
-$("#drop").addEventListener("drop", e=>{
-  const files = e.dataTransfer?.files ? Array.from(e.dataTransfer.files) : [];
+const dropEl = document.getElementById("drop");
+const uploadFeedbackEl = document.getElementById("uploadFeedback");
+let dragDepth = 0;
+
+function setUploadFeedback(message, tone = "") {
+  uploadFeedbackEl.textContent = message;
+  if (tone) uploadFeedbackEl.dataset.tone = tone;
+  else delete uploadFeedbackEl.dataset.tone;
+}
+
+function formatFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "";
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function renderPDFQueue() {
+  const queue = document.getElementById("pdfQueue");
+  const list = document.getElementById("pdfQueueList");
+  const clearButton = document.getElementById("clearPDFQueue");
+  queue.hidden = docs.length === 0;
+  dropEl.dataset.hasFiles = docs.length ? "true" : "false";
+  list.replaceChildren(...docs.map((doc) => {
+    const item = document.createElement("li");
+    item.className = "upload-file";
+    const name = document.createElement("span");
+    name.className = "upload-file-name";
+    name.textContent = doc.fileName;
+    name.title = doc.fileName;
+    const meta = document.createElement("span");
+    meta.className = "upload-file-meta";
+    const size = formatFileSize(doc.sourceFile?.size);
+    meta.textContent = `${doc.numPages} page${doc.numPages === 1 ? "" : "s"}${size ? ` · ${size}` : ""}`;
+    const state = document.createElement("span");
+    state.className = `upload-file-state${doc.processed ? " processed" : ""}`;
+    state.textContent = doc.processed ? "Processed" : doc.attempted ? "Needs retry" : "Ready";
+    item.append(name, meta, state);
+    return item;
+  }));
+  clearButton.disabled = !docs.length || directoryProcessing || docs.some(doc => doc.processed);
+  clearButton.title = docs.some(doc => doc.processed)
+    ? "Processed PDFs stay attached to their results. Use Start afresh to clear the full session."
+    : "Remove all PDFs waiting to be processed";
+  document.getElementById("btnProcess").disabled = !docs.some(doc => !doc.processed);
+}
+
+async function clearPDFQueue() {
+  if (!docs.length || docs.some(doc => doc.processed)) return;
+  if (!await confirmAction(
+    "Clear loaded PDFs?",
+    "This removes the PDFs waiting in this browser and any unfinished preview data. Your original files, student directory, answer key and saved results are unchanged.",
+    "Clear queue"
+  )) return;
+  clearingPreviews = true;
+  await previewRestorePromise;
+  await previewWriteQueue;
+  await Promise.allSettled(docs.map(doc => doc.pdf?.destroy?.()));
+  docs.splice(0);
+  PDF = null;
+  totalPages = 0;
+  currentPage = 1;
+  loadedFileName = "pages";
+  pageCanvases.length = 0;
+  pageSummaries = [];
+  processingFailures.clear();
+  try { await previewStore("readwrite", store => store.delete(previewSessionKey)); }
+  catch (error) { console.warn("Could not clear saved PDF previews", error); }
+  clearingPreviews = false;
+  const sheetCanvas = document.getElementById("studentSheetCanvas");
+  sheetCanvas?.getContext("2d")?.clearRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+  document.getElementById("pageCount").textContent = "0";
+  document.getElementById("pageNum").value = "1";
+  document.getElementById("pageNum").disabled = true;
+  document.getElementById("goToPreviewPage").disabled = true;
+  const sourceSelect = document.getElementById("previewSourceSearch");
+  sourceSelect.replaceChildren(new Option("No PDFs loaded", ""));
+  sourceSelect.disabled = true;
+  sourceSelect.dataset.pageCount = "0";
+  renderPDFQueue();
+  setUploadFeedback("PDF queue cleared.");
+  setStatus("Ready. Add PDF answer sheets.");
+}
+
+dropEl.addEventListener("dragenter", event => {
+  event.preventDefault();
+  dragDepth += 1;
+  dropEl.classList.add("dragover");
+});
+dropEl.addEventListener("dragover", event => {
+  event.preventDefault();
+  if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+});
+dropEl.addEventListener("dragleave", event => {
+  event.preventDefault();
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (!dragDepth) dropEl.classList.remove("dragover");
+});
+dropEl.addEventListener("drop", event => {
+  event.preventDefault();
+  dragDepth = 0;
+  dropEl.classList.remove("dragover");
+  const files = event.dataTransfer?.files ? Array.from(event.dataTransfer.files) : [];
   processSelectedPDFs(files);
+});
+dropEl.addEventListener("keydown", event => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  document.getElementById("file")?.click();
 });
 
 // Add: resilient file chooser handlers
@@ -821,23 +937,42 @@ async function onFileChosen(e) {
   } catch (err) {
     console.error("Error handling file selection:", err);
     setStatus("Failed to read selected file.");
+    setUploadFeedback("The selected files could not be read. Try choosing them again.", "error");
   }
 }
 
 async function processSelectedPDFs(files) {
   await previewRestorePromise;
-  const pdfFiles = Array.from(files || []).filter(file =>
+  const incomingFiles = Array.from(files || []);
+  const pdfFiles = incomingFiles.filter(file =>
     file && (file.type === "application/pdf" || file.name?.toLowerCase().endsWith(".pdf"))
   );
-  if (!pdfFiles.length) {
-    setStatus("No PDF files selected.");
+  const existingFiles = new Set(docs.map(doc => {
+    const file = doc.sourceFile;
+    return file ? `${file.name}:${file.size}:${file.lastModified}` : doc.fileName;
+  }));
+  const uniquePDFs = pdfFiles.filter(file => {
+    const key = `${file.name}:${file.size}:${file.lastModified}`;
+    if (existingFiles.has(key)) return false;
+    existingFiles.add(key);
+    return true;
+  });
+  const rejectedCount = incomingFiles.length - pdfFiles.length;
+  const duplicateCount = pdfFiles.length - uniquePDFs.length;
+  if (!uniquePDFs.length) {
+    const message = rejectedCount
+      ? "Only PDF files can be added."
+      : duplicateCount ? "Those PDFs are already in the queue." : "No PDF files selected.";
+    setStatus(message);
+    setUploadFeedback(message, "error");
     return;
   }
 
   const pagesBeforeLoad = totalPages;
-  setStatus(`Loading ${pdfFiles.length} PDF${pdfFiles.length === 1 ? "" : "s"}…`);
+  setStatus(`Loading ${uniquePDFs.length} PDF${uniquePDFs.length === 1 ? "" : "s"}…`);
+  setUploadFeedback("Checking and preparing the selected PDFs.");
   let loadedCount = 0;
-  for (const file of pdfFiles) {
+  for (const file of uniquePDFs) {
     loadedFileName = file.name;
     if (await loadPDF(file)) loadedCount++;
   }
@@ -845,6 +980,13 @@ async function processSelectedPDFs(files) {
     ? `${loadedCount} PDF${loadedCount === 1 ? "" : "s"} loaded. Ready to process.`
     : "No PDFs could be loaded."
   );
+  const skipped = rejectedCount + duplicateCount;
+  setUploadFeedback(loadedCount
+    ? `${loadedCount} PDF${loadedCount === 1 ? "" : "s"} added${skipped ? `; ${skipped} unsupported or duplicate file${skipped === 1 ? "" : "s"} skipped` : ""}.`
+    : "No valid PDFs could be loaded.",
+    loadedCount ? "success" : "error"
+  );
+  renderPDFQueue();
   if (loadedCount) window.markscanAnalytics?.track("pdf_selected", {
     pdf_count: loadedCount,
     sheet_count: totalPages - pagesBeforeLoad
@@ -879,16 +1021,12 @@ if (btnPickPDF) {
   };
 }
 
-// Make the entire drop area clickable (opens file chooser)
-const dropEl = document.getElementById("drop");
-if (dropEl) {
-  dropEl.addEventListener("click", (e) => {
-    // Avoid double-trigger when clicking the explicit button
-    if (e.target && e.target.id === "btnPickPDF") return;
-    const el = document.getElementById("file");
-    if (el) el.click();
-  });
-}
+// Make the entire drop area clickable (opens file chooser).
+dropEl.addEventListener("click", (event) => {
+  if (event.target?.id === "btnPickPDF") return;
+  document.getElementById("file")?.click();
+});
+document.getElementById("clearPDFQueue").addEventListener("click", clearPDFQueue);
 const prevBtnEl = document.getElementById("prevBtn");
 if (prevBtnEl) prevBtnEl.onclick = ()=>{ if(PDF && currentPage>1){ currentPage--; renderPreview(); } };
 const nextBtnEl = document.getElementById("nextBtn");
@@ -998,9 +1136,10 @@ async function loadPDF(file){
     currentPage = baseOffset + 1;
 
     await renderPreview();
+    renderPDFQueue();
     setStatus("Loaded. Ready.");
     return true;
-  }catch(e){ console.error(e); setStatus("Failed to load PDF."); return false; }
+  }catch(e){ console.error(e); setStatus("Failed to load PDF."); setUploadFeedback(`${file.name} is not a readable PDF.`, "error"); return false; }
 }
 async function renderPreview(){
   if(totalPages === 0) return;
@@ -1532,8 +1671,9 @@ async function processPDF(){
     setStatus("Processing stopped unexpectedly. Try the PDFs again.");
     document.getElementById("btnProcess").disabled = false;
     document.getElementById("btnCSV").disabled = results.length === 0;
+    renderPDFQueue();
   }
-  finally{directoryProcessing=false;document.getElementById("studentListFile").disabled=false;}
+  finally{directoryProcessing=false;document.getElementById("studentListFile").disabled=false;renderPDFQueue();}
 }
 async function processPDFWithDirectory(){
   // ... existing code ...
@@ -1805,6 +1945,7 @@ async function processPDFWithDirectory(){
     ? `Parsed ${newResults.length} page(s); ${failedCount} PDF${failedCount === 1 ? "" : "s"} failed.`
     : `Done. Parsed ${newResults.length} page(s) from ${pendingDocs.length} PDF${pendingDocs.length === 1 ? "" : "s"}.`
   );
+  renderPDFQueue();
 }
 
 /* ===== CSV ===== */
