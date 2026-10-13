@@ -762,6 +762,16 @@
   color: var(--string-muted);
 }
 
+.scanner-page .app-credit strong {
+  color: var(--string-dark);
+  font-weight: 600;
+}
+
+.scanner-page .app-credit a {
+  color: var(--string-dark);
+  text-underline-offset: 3px;
+}
+
 /* Metrics */
 .metrics-page {
   --bg: var(--string-canvas);
