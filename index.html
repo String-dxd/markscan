@@ -290,7 +290,7 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
       </div>
     </a>
     <div class="top-actions">
-      <span class="privacy-note">Your uploaded data stays in your browser</span>
+      <span class="privacy-note">Local processing</span>
       <a class="link-pill" href="metrics.html">Usage metrics</a>
       <button id="openInstructions" type="button">Instructions</button>
       <button id="openTutorial" type="button" aria-controls="tutorialGuide" aria-expanded="false">Guided setup</button>
@@ -360,27 +360,38 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
 
 <main class="app-shell">
 
-<p class="small data-safety-note" role="note"><span><strong>Your data stays on your device.</strong> Uploaded student lists and scanned answer sheets are processed locally in your browser. Their contents are not uploaded to the internet or sent to a server. Saved student lists, answer keys, and results are stored only in this browser, not in cloud storage. Use <strong>Start afresh</strong> to clear this app’s saved data. Downloaded files remain on your device.</span></p>
+<p class="small data-safety-note" role="note"><span><strong>Your data stays on this device.</strong> Student lists, PDFs, answers and results are processed and stored only in this browser. Anonymous usage counts are sent only if you allow analytics.</span></p>
+
+<nav class="workflow-progress" aria-label="Scanning workflow">
+  <ol>
+    <li data-workflow-step="1"><a href="#studentDirectory"><span class="workflow-index">1</span><span><strong>Students</strong><small id="workflowStatus1">Add CSV</small></span></a></li>
+    <li data-workflow-step="2"><a href="#answerKeyStep"><span class="workflow-index">2</span><span><strong>Answer key</strong><small id="workflowStatus2">Set key</small></span></a></li>
+    <li data-workflow-step="3"><a href="#uploadStep"><span class="workflow-index">3</span><span><strong>PDFs</strong><small id="workflowStatus3">Add files</small></span></a></li>
+    <li data-workflow-step="4"><a href="#reviewStep"><span class="workflow-index">4</span><span><strong>Review</strong><small id="workflowStatus4">Waiting</small></span></a></li>
+    <li data-workflow-step="5"><a href="#resultsSection"><span class="workflow-index">5</span><span><strong>Results</strong><small id="workflowStatus5">Waiting</small></span></a></li>
+  </ol>
+</nav>
 
 <details id="studentDirectory" class="card" style="margin-bottom:16px" aria-labelledby="studentDirectoryTitle">
   <summary class="directory-summary"><h2 id="studentDirectoryTitle" class="step-heading"><span class="step-number">1</span> Upload student directory <span class="small">First-time setup</span></h2><span class="directory-toggle-hint" aria-hidden="true"></span></summary>
-  <p class="small"><strong>Complete this setup once before your first use.</strong> Download the CSV template, fill in your students, and upload the completed file. Your saved directory loads automatically on future visits in this browser.</p>
-  <div class="control-group">
+  <p class="small"><strong>Complete this once.</strong> Download the template, add your students, then upload the completed CSV. It loads automatically on future visits in this browser.</p>
+  <div class="student-directory-actions">
     <button id="downloadStudentTemplate" type="button">Download student CSV template</button>
-    <label for="studentListFile">Upload student CSV</label>
-    <input id="studentListFile" type="file" accept=".csv,text/csv" aria-describedby="studentCSVHelp studentDirectoryStatus">
+    <label class="student-file-control" for="studentListFile"><span>Upload student CSV</span><input id="studentListFile" type="file" accept=".csv,text/csv" aria-describedby="studentCSVHelp studentDirectoryStatus"></label>
   </div>
-  <p class="small"><strong>Private and local:</strong> Your CSV is read and saved in this browser only. Student names and IDs are not sent to a server.</p>
-  <p id="studentCSVHelp" class="small">Required columns: <strong>CLASS, STUDENT, ID</strong>. Use one row per student, for example <code>1A,Alex Tan,1A01</code>. IDs must be unique and exactly four letters or digits; the first two characters identify the class. In Excel, format the ID column as <strong>Text</strong> before entering IDs to preserve values such as <code>0501</code> and <code>2E05</code>, then save as CSV UTF-8.</p>
-  <p class="small">You do not need to upload the list for every exam. Reopen this section only to update your student list, or to set it up again in a different browser or after clearing saved data. A new upload replaces the saved directory. This version stores its directory, answer key, and results separately from the original scanner.</p>
   <p id="studentDirectoryStatus" class="small" role="status" aria-live="polite">No students loaded. Upload your completed CSV before processing answer sheets.</p>
+  <details class="setup-help">
+    <summary>CSV format and privacy details</summary>
+    <p id="studentCSVHelp" class="small">Required columns: <strong>CLASS, STUDENT, ID</strong>. Use one row per student, for example <code>1A,Alex Tan,1A01</code>. IDs must be unique and exactly four letters or digits. Format the ID column as <strong>Text</strong> in Excel to preserve values such as <code>0501</code> and <code>2E05</code>, then save as CSV UTF-8.</p>
+    <p class="small"><strong>Private and local:</strong> The CSV is read and saved in this browser only. A new upload replaces the saved directory; student names and IDs are never sent to a server.</p>
+  </details>
   <details id="studentDirectoryPreview" hidden><summary>View loaded students</summary><div style="max-height:260px;overflow:auto"><table style="width:100%;text-align:left"><thead><tr><th scope="col">Class</th><th scope="col">Student</th><th scope="col">ID</th></tr></thead><tbody id="studentDirectoryRows"></tbody></table></div></details>
 </details>
 
 
-<div class="row">
+<div class="row setup-row">
   <!-- Answer Key -->
-  <div class="card" style="flex:1 1 360px;min-width:320px">
+  <section id="answerKeyStep" class="card setup-card">
     <h2 class="step-heading"><span class="step-number">2</span> Set the answer key</h2>
     <div class="small" style="margin-top:6px">
       Enter the correct answers, choose the number of questions, then click <strong>Save answer key</strong>. Use <strong>X</strong> to void a question; it is excluded from scores and the maximum mark.
@@ -400,7 +411,10 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
     </div>
 
 
-    <h2 class="step-heading step-divider"><span class="step-number">3</span> Upload answer sheets</h2>
+  </section>
+
+  <section id="uploadStep" class="card upload-card">
+    <h2 class="step-heading"><span class="step-number">3</span> Upload answer sheets</h2>
     <p class="small" style="margin:6px 0 0">Select or drop your scanned PDF files below, then click <strong>Process PDFs</strong>. Files are read locally; their contents are not uploaded to a server.</p>
     <div id="drop" class="drop" role="button" tabindex="0" aria-label="Choose PDF answer sheets or drag and drop them here" aria-describedby="uploadHelp uploadFeedback">
       <div class="drop-content drop-default">
@@ -430,29 +444,32 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
       <button id="btnProcess" class="primary" disabled="">Process PDFs</button>
       <button id="btnCSV" disabled="">Download raw scan data</button>
 
-      <!-- Status moved here, near Process PDF -->
       <span class="small" id="status" style="margin-left:8px" role="status" aria-live="polite">Ready</span>
-       <!-- Issues log -->
-      <div style="margin-top:10px; flex-basis:100%"><strong>Processing issues</strong></div>
-      <fieldset id="issueFilters" class="issue-filters">
-        <legend class="small">Show issue types — uncheck to hide</legend>
-        <label><input type="checkbox" value="blank" checked> Missing answers</label>
-        <label><input type="checkbox" value="multi" checked> Multiple answers</label>
-        <label><input type="checkbox" value="id" checked> Missing / unknown IDs</label>
-        <label><input type="checkbox" value="duplicate" checked> Duplicate IDs</label>
-        <label><input type="checkbox" value="processing" checked> Processing failures</label>
-      </fieldset>
-      <div style="margin-top:10px; flex-basis:100%"><ul id="issues" class="issue-checklist" data-empty-message="No issues detected yet." aria-live="polite"></ul></div>
+      <details id="processingIssues" class="processing-issues" hidden>
+        <summary><strong>Processing issues</strong><span id="issueCount">None</span></summary>
+        <fieldset id="issueFilters" class="issue-filters">
+          <legend class="small">Show issue types</legend>
+          <label><input type="checkbox" value="blank" checked> Missing answers</label>
+          <label><input type="checkbox" value="multi" checked> Multiple answers</label>
+          <label><input type="checkbox" value="id" checked> Missing / unknown IDs</label>
+          <label><input type="checkbox" value="duplicate" checked> Duplicate IDs</label>
+          <label><input type="checkbox" value="processing" checked> Processing failures</label>
+        </fieldset>
+        <ul id="issues" class="issue-checklist" data-empty-message="No issues detected yet." aria-live="polite"></ul>
+      </details>
     </div>
-  </div>
+  </section>
+</div>
 
   <!-- Results -->
-  <div class="card review-card" style="flex:2 1 540px;min-width:420px">
+  <section id="reviewStep" class="card review-card workflow-section">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
       <h2 class="step-heading"><span class="step-number">4</span> Review student sheets</h2>
       <span class="small">Detected responses: <code>filename;ID;answers...</code></span>
     </div>
     <p class="small" style="margin:8px 0">Check each scanned sheet, correct student IDs or answers when needed, then print or download the student reports.</p>
+    <div id="reviewEmpty" class="stage-empty"><strong>Review unlocks after processing</strong><span>Add PDFs in step 3 and process them to inspect student IDs, answers and marked sheets.</span></div>
+    <div id="reviewContent" hidden>
     <div class="review-controls">
       <form id="studentSearchForm" class="control-group">
         <label class="small" for="studentNameSearch">Find student</label>
@@ -534,15 +551,17 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
         </div>
       </div>
     <div id="printArea" class="print-sheet"></div>
-  </div>
+    </div>
+  </section>
 
   <!-- Controls + Preview -->
   <!-- Controls + Preview card removed -->
-</div>
 
 <section id="resultsSection" class="card all-results" style="margin-top:16px">
   <h2 class="step-heading"><span class="step-number">5</span> Analyze and export results</h2>
   <p class="small">Review question performance by class, compare class averages, edit student results, and export graded results. Saved edits update the review section automatically.</p>
+  <div id="resultsEmpty" class="stage-empty"><strong>Results will appear here</strong><span>Process at least one answer sheet to unlock question analysis, class performance and exports.</span></div>
+  <div id="resultsContent" hidden>
   <div class="results-toolbar">
   <div class="results-views" role="group" aria-label="Results views">
     <button id="showQuestionSummary" type="button" aria-pressed="true">Question analysis</button>
@@ -557,6 +576,7 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
   <iframe id="integratedClasses" title="Class overall performance" style="width:100%;height:75vh;border:0;border-radius:12px" hidden></iframe>
   <iframe id="integratedEditor" title="Edit student results and export CSV" style="width:100%;height:75vh;border:0;border-radius:12px" hidden></iframe>
   <div class="results-footer"><details><summary class="small">Raw scan data</summary><pre id="out" class="log" style="margin-top:8px"></pre></details><button id="btnClearResults" class="small results-clear" type="button">Clear saved results</button></div>
+  </div>
 </section>
 
 </main>
@@ -802,6 +822,7 @@ function loadStoredResults() {
     console.warn("Failed to load stored results:", e);
     results = [];
   }
+  updateWorkflowProgress();
 }
 function saveStoredResults() {
   try {
@@ -857,6 +878,41 @@ function renderPDFQueue() {
     ? "Processed PDFs stay attached to their results. Use Start afresh to clear the full session."
     : "Remove all PDFs waiting to be processed";
   document.getElementById("btnProcess").disabled = !docs.some(doc => !doc.processed);
+  updateWorkflowProgress();
+}
+
+function updateWorkflowProgress() {
+  const processedDocs = docs.filter(doc => doc.processed).length;
+  const hasReview = hasProcessedReportData();
+  const hasResults = results.length > 0;
+  const states = [
+    { complete: studentMap.size > 0, text: studentMap.size ? `${studentMap.size} students` : "Add CSV" },
+    { complete: Array.isArray(savedAnswerKey) && savedAnswerKey.some(Boolean), text: savedAnswerKey?.some(Boolean) ? `${savedAnswerKey.filter(Boolean).length} answers` : "Set key" },
+    { complete: docs.length > 0 && processedDocs === docs.length, text: !docs.length ? "Add files" : processedDocs === docs.length ? "Processed" : `${docs.length} ready` },
+    { complete: hasReview, text: hasReview ? `${pageSummaries.filter(Boolean).length} sheets` : "Waiting" },
+    { complete: hasResults, text: hasResults ? "Ready" : "Waiting" }
+  ];
+  const firstIncomplete = states.findIndex(state => !state.complete);
+  const currentStep = firstIncomplete === -1 ? states.length - 1 : firstIncomplete;
+  states.forEach((state, index) => {
+    const item = document.querySelector(`[data-workflow-step="${index + 1}"]`);
+    if (!item) return;
+    item.classList.toggle("is-complete", state.complete);
+    item.classList.toggle("is-current", index === currentStep);
+    const link = item.querySelector("a");
+    if (index === currentStep) link.setAttribute("aria-current", "step");
+    else link.removeAttribute("aria-current");
+    const status = document.getElementById(`workflowStatus${index + 1}`);
+    if (status) status.textContent = state.text;
+  });
+  const reviewEmpty = document.getElementById("reviewEmpty");
+  const reviewContent = document.getElementById("reviewContent");
+  const resultsEmpty = document.getElementById("resultsEmpty");
+  const resultsContent = document.getElementById("resultsContent");
+  if (reviewEmpty) reviewEmpty.hidden = hasReview;
+  if (reviewContent) reviewContent.hidden = !hasReview;
+  if (resultsEmpty) resultsEmpty.hidden = hasResults;
+  if (resultsContent) resultsContent.hidden = !hasResults;
 }
 
 async function clearPDFQueue() {
@@ -2069,6 +2125,7 @@ function saveAnswerKey() {
   if (status) status.textContent = count === n
     ? `Saved ${count}/${n}`
     : `Saved ${count}/${n} — ${n - count} answers missing`;
+  updateWorkflowProgress();
   window.markscanAnalytics?.track("answer_key_saved", { question_count: n });
 }
 async function clearAnswerKey() {
@@ -2080,6 +2137,7 @@ async function clearAnswerKey() {
   if (ta) ta.value = "";
   const status = document.getElementById("keyStatus");
   if (status) status.textContent = "Not saved";
+  updateWorkflowProgress();
   updateTutorial();
 }
 function getAnswerKey() {
@@ -2211,7 +2269,7 @@ function refreshStudentDirectory(message) {
     body.appendChild(row);
   }
   document.getElementById("studentDirectoryPreview").hidden=!loaded;
-  recomputeIssues();renderSummaryForPage(currentPage);renderCurrentReportPreview(currentPage);updateTutorial();
+  recomputeIssues();renderSummaryForPage(currentPage);renderCurrentReportPreview(currentPage);updateTutorial();updateWorkflowProgress();
 }
 // Share the current directory with the embedded export, including preloaded lists.
 window.getStudentDirectory = () => [...studentMap.values()];
@@ -2225,7 +2283,7 @@ function loadStudentList() {
       if(!Array.isArray(saved))throw new Error("Saved student directory is invalid.");
       if(saved.length)studentMap=validateStudentRows([["CLASS","STUDENT","ID"],...saved.map(student=>[student.cls,student.name,student.id])]);
     }
-    setStudentDirectoryVisible(false);
+    setStudentDirectoryVisible(!studentMap.size);
     refreshStudentDirectory(studentMap.size?`Loaded ${studentMap.size} saved students from this browser.`:"No students loaded. Upload your completed CSV before processing answer sheets.");
   }catch(error){refreshStudentDirectory("Could not restore your saved directory. Upload your CSV again. "+error.message);}
 }
@@ -3042,6 +3100,11 @@ function renderIssueChecklist() {
   list.dataset.emptyMessage = issueHistory.size ? "No issues match the selected types." : "No issues detected yet.";
   const priority = {id:0, duplicate:1, processing:2, multi:3, blank:4};
   const ordered = [...issueHistory.values()].sort((a,b) => Number(a.resolved)-Number(b.resolved) || priority[a.type]-priority[b.type]);
+  const unresolvedCount = ordered.filter(issue => !issue.resolved).length;
+  const issuePanel = document.getElementById("processingIssues");
+  issuePanel.hidden = !docs.some(doc => doc.processed || doc.attempted) && !issueHistory.size;
+  document.getElementById("issueCount").textContent = unresolvedCount ? `${unresolvedCount} unresolved` : "None";
+  if (unresolvedCount) issuePanel.open = true;
   for (const issue of ordered) {
     if (!shownTypes.has(issue.type)) continue;
     const item = document.createElement("li");
@@ -3077,6 +3140,7 @@ function renderIssueChecklist() {
     item.append(symbol, text);
     list.appendChild(item);
   }
+  updateWorkflowProgress();
   updateTutorial();
 }
 /* ===== SAFETY: only bind if present (prevents load-time crash) ===== */
@@ -3169,6 +3233,7 @@ function syncIntegratedReview(readStorage = true) {
   renderSummaryForPage(currentPage);
   renderPreview();
   renderIntegratedFrames();
+  updateWorkflowProgress();
 }
 function showIntegratedResults(view) {
   for (const [name,frame,button] of [["editor","integratedEditor","showResultsEditor"],["summary","integratedSummary","showQuestionSummary"],["classes","integratedClasses","showClassSummary"]]) {
