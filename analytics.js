@@ -4,7 +4,8 @@
   const measurementId = "G-7VK5RL8WPN";
   const consentKey = "markscan.analytics-consent";
   const sessionKey = "markscan.analytics-session";
-  const isLocal = location.protocol === "file:" || ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
+  const productionHosts = new Set(["markscan.string.sg"]);
+  const analyticsEnabled = location.protocol === "https:" && productionHosts.has(location.hostname);
   let consent = readStorage(localStorage, consentKey);
   let googleAnalyticsReady = false;
 
@@ -34,7 +35,7 @@
   }
 
   function initializeGoogleAnalytics() {
-    if (googleAnalyticsReady || isLocal || consent !== "granted") return;
+    if (googleAnalyticsReady || !analyticsEnabled || consent !== "granted") return;
     googleAnalyticsReady = true;
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
@@ -50,7 +51,13 @@
     window.gtag("config", measurementId, {
       anonymize_ip: true,
       allow_google_signals: false,
-      allow_ad_personalization_signals: false
+      allow_ad_personalization_signals: false,
+      send_page_view: false
+    });
+    window.gtag("event", "page_view", {
+      page_title: "MarkScan",
+      page_location: `${location.origin}${location.pathname}`,
+      page_path: location.pathname
     });
     const script = document.createElement("script");
     script.async = true;
@@ -68,7 +75,7 @@
   }
 
   function track(eventName, properties) {
-    if (isLocal || consent !== "granted") return;
+    if (!analyticsEnabled || consent !== "granted") return;
     initializeGoogleAnalytics();
     const cleanProperties = sanitizeClientProperties(properties);
     window.gtag?.("event", eventName, cleanProperties);
@@ -114,7 +121,7 @@
   }
 
   function showConsentDialog() {
-    if (isLocal) return;
+    if (!analyticsEnabled) return;
     addConsentStyles();
     document.getElementById("analytics-consent")?.remove();
     const dialog = document.createElement("section");
@@ -124,7 +131,7 @@
     dialog.setAttribute("aria-labelledby", "analytics-consent-title");
     dialog.innerHTML = `
       <strong id="analytics-consent-title">Help improve MarkScan</strong>
-      <p>With your permission, MarkScan records anonymous visits and aggregate usage counts. Student data, answers, scores, exam titles and files are never sent.</p>
+      <p>With your permission, MarkScan records limited visit information and aggregate usage counts. Student data, answers, scores, exam titles and files are never sent.</p>
       <div class="analytics-consent-actions">
         <button type="button" data-consent="denied">Decline</button>
         <button type="button" data-consent="granted">Allow analytics</button>
@@ -138,7 +145,7 @@
   }
 
   function initializeConsentUi() {
-    if (isLocal) return;
+    if (!analyticsEnabled) return;
     addConsentStyles();
     const privacyButton = document.createElement("button");
     privacyButton.type = "button";
