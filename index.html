@@ -372,8 +372,8 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
   </ol>
 </nav>
 
-<details id="studentDirectory" class="card" style="margin-bottom:16px" aria-labelledby="studentDirectoryTitle">
-  <summary class="directory-summary"><h2 id="studentDirectoryTitle" class="step-heading"><span class="step-number">1</span> Upload student directory <span class="small">First-time setup</span></h2><span class="directory-toggle-hint" aria-hidden="true"></span></summary>
+<details id="studentDirectory" class="card workflow-stage" data-workflow-stage="1" style="margin-bottom:16px" aria-labelledby="studentDirectoryTitle">
+  <summary class="directory-summary"><h2 id="studentDirectoryTitle" class="step-heading" tabindex="-1"><span class="step-number">1</span> Upload student directory <span class="small">First-time setup</span></h2><span class="directory-toggle-hint" aria-hidden="true"></span></summary>
   <p class="small"><strong>Complete this once.</strong> Download the template, add your students, then upload the completed CSV. It loads automatically on future visits in this browser.</p>
   <div class="student-directory-actions">
     <button id="downloadStudentTemplate" type="button">Download student CSV template</button>
@@ -386,13 +386,14 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
     <p class="small"><strong>Private and local:</strong> The CSV is read and saved in this browser only. A new upload replaces the saved directory; student names and IDs are never sent to a server.</p>
   </details>
   <details id="studentDirectoryPreview" hidden><summary>View loaded students</summary><div style="max-height:260px;overflow:auto"><table style="width:100%;text-align:left"><thead><tr><th scope="col">Class</th><th scope="col">Student</th><th scope="col">ID</th></tr></thead><tbody id="studentDirectoryRows"></tbody></table></div></details>
+  <div class="workflow-nav"><span class="small">Your directory stays saved in this browser.</span><button type="button" class="primary" data-workflow-next="2">Continue to answer key</button></div>
 </details>
 
 
 <div class="row setup-row">
   <!-- Answer Key -->
-  <section id="answerKeyStep" class="card setup-card">
-    <h2 class="step-heading"><span class="step-number">2</span> Set the answer key</h2>
+  <section id="answerKeyStep" class="card setup-card workflow-stage" data-workflow-stage="2">
+    <h2 class="step-heading" tabindex="-1"><span class="step-number">2</span> Set the answer key</h2>
     <div class="small" style="margin-top:6px">
       Enter the correct answers, choose the number of questions, then click <strong>Save answer key</strong>. Use <strong>X</strong> to void a question; it is excluded from scores and the maximum mark.
     </div>
@@ -411,10 +412,11 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
     </div>
 
 
+    <div class="workflow-nav"><button type="button" data-workflow-back="1">Back to students</button><button type="button" class="primary" data-workflow-next="3">Continue to PDFs</button></div>
   </section>
 
-  <section id="uploadStep" class="card upload-card">
-    <h2 class="step-heading"><span class="step-number">3</span> Upload answer sheets</h2>
+  <section id="uploadStep" class="card upload-card workflow-stage" data-workflow-stage="3">
+    <h2 class="step-heading" tabindex="-1"><span class="step-number">3</span> Upload answer sheets</h2>
     <p class="small" style="margin:6px 0 0">Select or drop your scanned PDF files below, then click <strong>Process PDFs</strong>. Files are read locally; their contents are not uploaded to a server.</p>
     <div id="drop" class="drop" role="button" tabindex="0" aria-label="Choose PDF answer sheets or drag and drop them here" aria-describedby="uploadHelp uploadFeedback">
       <div class="drop-content drop-default">
@@ -458,13 +460,14 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
         <ul id="issues" class="issue-checklist" data-empty-message="No issues detected yet." aria-live="polite"></ul>
       </details>
     </div>
+    <div class="workflow-nav"><button type="button" data-workflow-back="2">Back to answer key</button><span class="small">Processing opens the review stage automatically.</span></div>
   </section>
 </div>
 
   <!-- Results -->
-  <section id="reviewStep" class="card review-card workflow-section">
+  <section id="reviewStep" class="card review-card workflow-section workflow-stage" data-workflow-stage="4">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-      <h2 class="step-heading"><span class="step-number">4</span> Review student sheets</h2>
+      <h2 class="step-heading" tabindex="-1"><span class="step-number">4</span> Review student sheets</h2>
       <span class="small">Detected responses: <code>filename;ID;answers...</code></span>
     </div>
     <p class="small" style="margin:8px 0">Check each scanned sheet, correct student IDs or answers when needed, then print or download the student reports.</p>
@@ -552,13 +555,14 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
       </div>
     <div id="printArea" class="print-sheet"></div>
     </div>
+    <div class="workflow-nav"><button type="button" data-workflow-back="3">Back to PDFs</button><button type="button" class="primary" data-workflow-next="5">Continue to results</button></div>
   </section>
 
   <!-- Controls + Preview -->
   <!-- Controls + Preview card removed -->
 
-<section id="resultsSection" class="card all-results" style="margin-top:16px">
-  <h2 class="step-heading"><span class="step-number">5</span> Analyze and export results</h2>
+<section id="resultsSection" class="card all-results workflow-stage" data-workflow-stage="5" style="margin-top:16px">
+  <h2 class="step-heading" tabindex="-1"><span class="step-number">5</span> Analyze and export results</h2>
   <p class="small">Review question performance by class, compare class averages, edit student results, and export graded results. Saved edits update the review section automatically.</p>
   <div id="resultsEmpty" class="stage-empty"><strong>Results will appear here</strong><span>Process at least one answer sheet to unlock question analysis, class performance and exports.</span></div>
   <div id="resultsContent" hidden>
@@ -577,6 +581,7 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
   <iframe id="integratedEditor" title="Edit student results and export CSV" style="width:100%;height:75vh;border:0;border-radius:12px" hidden></iframe>
   <div class="results-footer"><details><summary class="small">Raw scan data</summary><pre id="out" class="log" style="margin-top:8px"></pre></details><button id="btnClearResults" class="small results-clear" type="button">Clear saved results</button></div>
   </div>
+  <div class="workflow-nav"><button type="button" data-workflow-back="4">Back to review</button><span class="small">You can revisit any completed step above.</span></div>
 </section>
 
 </main>
@@ -850,6 +855,84 @@ function formatFileSize(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+let activeWorkflowStep = null;
+let workflowNavigatorReady = false;
+
+function getWorkflowStates() {
+  const processedDocs = docs.filter(doc => doc.processed).length;
+  const hasReview = hasProcessedReportData();
+  const hasResults = results.length > 0;
+  return [
+    { complete: studentMap.size > 0, text: studentMap.size ? `${studentMap.size} students` : "Add CSV" },
+    { complete: Array.isArray(savedAnswerKey) && savedAnswerKey.some(Boolean), text: savedAnswerKey?.some(Boolean) ? `${savedAnswerKey.filter(Boolean).length} answers` : "Set key" },
+    { complete: docs.length > 0 && processedDocs === docs.length, text: !docs.length ? "Add files" : processedDocs === docs.length ? "Processed" : `${docs.length} ready` },
+    { complete: hasReview, text: hasReview ? `${pageSummaries.filter(Boolean).length} sheets` : "Waiting" },
+    { complete: hasResults, text: hasResults ? "Ready" : "Waiting" }
+  ];
+}
+
+function isWorkflowStepUnlocked(step, states = getWorkflowStates()) {
+  if (step === 1) return true;
+  if (step === 2) return states[0].complete;
+  if (step === 3) return states[0].complete && states[1].complete;
+  if (step === 4) return states[3].complete;
+  if (step === 5) return states[4].complete;
+  return false;
+}
+
+function renderWorkflowStage() {
+  if (!workflowNavigatorReady || activeWorkflowStep === null) return;
+  document.querySelectorAll("[data-workflow-stage]").forEach(stage => {
+    const isActive = Number(stage.dataset.workflowStage) === activeWorkflowStep;
+    stage.hidden = !isActive;
+    stage.classList.toggle("is-active", isActive);
+  });
+}
+
+function showWorkflowStep(step, options = {}) {
+  const { focus = true, scroll = true, force = false, updateHash = true } = options;
+  const nextStep = Number(step);
+  if (!force && !isWorkflowStepUnlocked(nextStep)) return false;
+  activeWorkflowStep = nextStep;
+  renderWorkflowStage();
+  updateWorkflowProgress();
+  const stage = document.querySelector(`[data-workflow-stage="${nextStep}"]`);
+  if (stage?.matches("details")) stage.open = true;
+  if (stage && updateHash) history.replaceState(null, "", `#${stage.id}`);
+  const progress = document.querySelector(".workflow-progress");
+  const progressItem = document.querySelector(`[data-workflow-step="${nextStep}"]`);
+  if (progress && progressItem && progress.scrollWidth > progress.clientWidth) {
+    progress.scrollTo({ left: progressItem.offsetLeft - (progress.clientWidth - progressItem.offsetWidth) / 2, behavior: "smooth" });
+  }
+  if (scroll) stage?.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (focus) stage?.querySelector(".step-heading")?.focus({ preventScroll: true });
+  return true;
+}
+
+function initializeWorkflowNavigator() {
+  if (workflowNavigatorReady) return;
+  workflowNavigatorReady = true;
+  const states = getWorkflowStates();
+  const firstIncomplete = states.findIndex(state => !state.complete);
+  const recommendedStep = firstIncomplete === -1 ? 5 : firstIncomplete + 1;
+  const requestedStage = location.hash ? document.querySelector(`[data-workflow-stage]${location.hash}`) : null;
+  const requestedStep = Number(requestedStage?.dataset.workflowStage);
+  const initialStep = requestedStep && isWorkflowStepUnlocked(requestedStep, states) ? requestedStep : recommendedStep;
+  document.querySelectorAll("[data-workflow-step] a").forEach(link => {
+    link.addEventListener("click", event => {
+      event.preventDefault();
+      showWorkflowStep(Number(link.closest("[data-workflow-step]").dataset.workflowStep));
+    });
+  });
+  document.querySelectorAll("[data-workflow-next]").forEach(button => {
+    button.addEventListener("click", () => showWorkflowStep(Number(button.dataset.workflowNext)));
+  });
+  document.querySelectorAll("[data-workflow-back]").forEach(button => {
+    button.addEventListener("click", () => showWorkflowStep(Number(button.dataset.workflowBack)));
+  });
+  showWorkflowStep(initialStep, { focus: false, scroll: false, force: true, updateHash: false });
+}
+
 function renderPDFQueue() {
   const queue = document.getElementById("pdfQueue");
   const list = document.getElementById("pdfQueueList");
@@ -882,28 +965,31 @@ function renderPDFQueue() {
 }
 
 function updateWorkflowProgress() {
-  const processedDocs = docs.filter(doc => doc.processed).length;
-  const hasReview = hasProcessedReportData();
-  const hasResults = results.length > 0;
-  const states = [
-    { complete: studentMap.size > 0, text: studentMap.size ? `${studentMap.size} students` : "Add CSV" },
-    { complete: Array.isArray(savedAnswerKey) && savedAnswerKey.some(Boolean), text: savedAnswerKey?.some(Boolean) ? `${savedAnswerKey.filter(Boolean).length} answers` : "Set key" },
-    { complete: docs.length > 0 && processedDocs === docs.length, text: !docs.length ? "Add files" : processedDocs === docs.length ? "Processed" : `${docs.length} ready` },
-    { complete: hasReview, text: hasReview ? `${pageSummaries.filter(Boolean).length} sheets` : "Waiting" },
-    { complete: hasResults, text: hasResults ? "Ready" : "Waiting" }
-  ];
-  const firstIncomplete = states.findIndex(state => !state.complete);
-  const currentStep = firstIncomplete === -1 ? states.length - 1 : firstIncomplete;
+  const states = getWorkflowStates();
+  const hasReview = states[3].complete;
+  const hasResults = states[4].complete;
   states.forEach((state, index) => {
     const item = document.querySelector(`[data-workflow-step="${index + 1}"]`);
     if (!item) return;
+    const step = index + 1;
+    const unlocked = isWorkflowStepUnlocked(step, states);
     item.classList.toggle("is-complete", state.complete);
-    item.classList.toggle("is-current", index === currentStep);
+    item.classList.toggle("is-current", step === activeWorkflowStep);
+    item.classList.toggle("is-locked", !unlocked);
     const link = item.querySelector("a");
-    if (index === currentStep) link.setAttribute("aria-current", "step");
+    if (step === activeWorkflowStep) link.setAttribute("aria-current", "step");
     else link.removeAttribute("aria-current");
+    if (unlocked) link.removeAttribute("aria-disabled");
+    else link.setAttribute("aria-disabled", "true");
+    link.title = unlocked ? "" : "Complete the earlier steps to unlock this stage";
     const status = document.getElementById(`workflowStatus${index + 1}`);
     if (status) status.textContent = state.text;
+  });
+  document.querySelectorAll("[data-workflow-next]").forEach(button => {
+    button.disabled = !isWorkflowStepUnlocked(Number(button.dataset.workflowNext), states);
+  });
+  document.querySelectorAll("[data-workflow-back]").forEach(button => {
+    button.disabled = !isWorkflowStepUnlocked(Number(button.dataset.workflowBack), states);
   });
   const reviewEmpty = document.getElementById("reviewEmpty");
   const reviewContent = document.getElementById("reviewContent");
@@ -913,6 +999,7 @@ function updateWorkflowProgress() {
   if (reviewContent) reviewContent.hidden = !hasReview;
   if (resultsEmpty) resultsEmpty.hidden = hasResults;
   if (resultsContent) resultsContent.hidden = !hasResults;
+  renderWorkflowStage();
 }
 
 async function clearPDFQueue() {
@@ -1713,7 +1800,7 @@ async function processPDF(){
   await previewRestorePromise;
   if(directoryProcessing)return;
   if(directoryUploading){setStatus("Wait for the student CSV to finish saving.");return;}
-  if(!studentMap.size){setStatus("Upload your student CSV before processing answer sheets.");setStudentDirectoryVisible(true);document.getElementById("studentDirectory").scrollIntoView({behavior:"smooth"});document.getElementById("studentListFile").focus();return;}
+  if(!studentMap.size){setStatus("Upload your student CSV before processing answer sheets.");showWorkflowStep(1,{focus:false,force:true});setStudentDirectoryVisible(true);document.getElementById("studentListFile").focus();return;}
   directoryProcessing=true;document.getElementById("studentListFile").disabled=true;
   const startedAt = performance.now();
   const pendingSheetCount = docs.filter(doc => !doc.processed).reduce((sum, doc) => sum + doc.numPages, 0);
@@ -2002,6 +2089,7 @@ async function processPDFWithDirectory(){
     : `Done. Parsed ${newResults.length} page(s) from ${pendingDocs.length} PDF${pendingDocs.length === 1 ? "" : "s"}.`
   );
   renderPDFQueue();
+  if (newResults.length || hasProcessedReportData()) showWorkflowStep(4);
 }
 
 /* ===== CSV ===== */
@@ -2127,6 +2215,7 @@ function saveAnswerKey() {
     : `Saved ${count}/${n} — ${n - count} answers missing`;
   updateWorkflowProgress();
   window.markscanAnalytics?.track("answer_key_saved", { question_count: n });
+  showWorkflowStep(3);
 }
 async function clearAnswerKey() {
   if (!await confirmAction("Clear answer key?", "This deletes the saved answer key and clears the answer field. Existing results will remain but will no longer be graded until you save another key.", "Clear answer key")) return;
@@ -2229,6 +2318,7 @@ function searchStudentIndex(event) {
 }
 
 function setStudentDirectoryVisible(visible) {
+  if (visible && workflowNavigatorReady) showWorkflowStep(1, { focus: false, force: true });
   document.getElementById("studentDirectory").open = visible;
 }
 function validateStudentRows(rows) {
@@ -2298,6 +2388,7 @@ async function uploadStudentList(event) {
     tutorialConfirmDirectory = false;
     refreshStudentDirectory(`Saved ${studentMap.size} students from ${file.name}. Ready to process answer sheets.`);
     window.markscanAnalytics?.track("student_directory_configured", { student_count: studentMap.size });
+    showWorkflowStep(2);
   }catch(error){document.getElementById("studentDirectoryStatus").textContent=`Upload failed: ${error.message} Your current directory has not been changed.`;}
   finally{input.value="";input.disabled=false;directoryUploading=false;}
 }
@@ -2563,6 +2654,7 @@ function buildAllReportsHTMLDoc(){
 
 function openItemAnalysisPreview() {
   showIntegratedResults("summary");
+  showWorkflowStep(5, { focus: false });
   document.getElementById("resultsSection").scrollIntoView({behavior:"smooth"});
   document.getElementById("showQuestionSummary").focus({preventScroll:true});
 }
@@ -2805,6 +2897,8 @@ function initCTASequence() {
   document.getElementById("tutorialLocate").onclick = () => {
     const target = document.getElementById(tutorialTargets[0]);
     if (!target) return;
+    const workflowStage = target.closest("[data-workflow-stage]");
+    if (workflowStage) showWorkflowStep(Number(workflowStage.dataset.workflowStage), { focus: false, force: true });
     if (target.closest("#studentDirectory")) setStudentDirectoryVisible(true);
     target.scrollIntoView({behavior:"smooth", block:"center"});
     if (target.id === "issues") {
@@ -3258,9 +3352,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("showQuestionSummary").onclick = () => showIntegratedResults("summary");
   document.getElementById("viewEntriesInline").onclick = () => {
     showIntegratedResults("editor");
+    showWorkflowStep(5, { focus: false });
     document.getElementById("resultsSection").scrollIntoView({behavior:"smooth"});
   };
   syncIntegratedReview();
+  initializeWorkflowNavigator();
 });
 window.addEventListener("storage", event => {
   if (event.key === LS_EXAM_TITLE || event.key === null) {

@@ -264,13 +264,55 @@
   color: var(--string-white);
 }
 
+.scanner-page .workflow-progress li.is-locked {
+  opacity: .5;
+}
+
+.scanner-page .workflow-progress li.is-locked a {
+  cursor: not-allowed;
+}
+
+.scanner-page .workflow-stage[hidden] {
+  display: none !important;
+}
+
+.scanner-page .workflow-stage {
+  animation: workflow-stage-in .18s ease-out;
+}
+
+.scanner-page #studentDirectory,
+.scanner-page .setup-row {
+  width: min(100%, 980px);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.scanner-page .workflow-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--string-line-soft);
+}
+
+.scanner-page .workflow-nav button:last-child {
+  margin-left: auto;
+}
+
+@keyframes workflow-stage-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .scanner-page .row {
   grid-template-columns: minmax(340px, .8fr) minmax(520px, 1.4fr);
   gap: 16px;
 }
 
 .scanner-page .setup-row {
-  grid-template-columns: minmax(0, .8fr) minmax(420px, 1.2fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
 }
 
@@ -955,6 +997,17 @@
   .scanner-page .student-file-control,
   .scanner-page .student-file-control input { width: 100%; }
 
+  .scanner-page .workflow-nav {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .scanner-page .workflow-nav button,
+  .scanner-page .workflow-nav button:last-child {
+    width: 100%;
+    margin-left: 0;
+  }
+
   .scanner-page .drop {
     min-height: 176px;
     padding: 20px 14px;
@@ -973,4 +1026,8 @@
   .scanner-page .workflow-progress {
     display: none !important;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanner-page .workflow-stage { animation: none; }
 }
