@@ -193,7 +193,6 @@
     .app-header-inner, .app-shell { width: min(100% - 24px, 1480px); }
     .app-header-inner { padding: 14px 0; align-items: flex-start; flex-direction: column; gap: 12px; }
     .top-actions { width: 100%; justify-content: space-between; }
-    .privacy-note { display: none; }
     .app-shell { padding-top: 14px; }
     .card { padding: 15px; border-radius: 15px; }
     .report-page { width: 100%; min-height: auto; }
@@ -290,7 +289,13 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
       </div>
     </a>
     <div class="top-actions">
-      <span class="privacy-note">Local processing</span>
+      <span class="local-processing-group">
+        <span class="privacy-note">Local processing</span>
+        <span class="privacy-info">
+          <button id="privacyInfoButton" class="privacy-info-button" type="button" aria-label="About local processing and analytics" aria-describedby="localProcessingInfo" aria-expanded="false">i</button>
+          <span id="localProcessingInfo" class="privacy-popover" role="tooltip"><strong>Your data stays on this device.</strong> Student lists, PDFs, answers and results are processed and stored only in this browser. Limited visit information and aggregate usage counts are sent only if you allow analytics.</span>
+        </span>
+      </span>
       <a class="link-pill" href="metrics.html">Usage metrics</a>
       <button id="openInstructions" type="button">Instructions</button>
       <button id="openTutorial" type="button" aria-controls="tutorialGuide" aria-expanded="false">Guided setup</button>
@@ -359,8 +364,6 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
 </dialog>
 
 <main class="app-shell">
-
-<p class="small data-safety-note" role="note"><span><strong>Your data stays on this device.</strong> Student lists, PDFs, answers and results are processed and stored only in this browser. Limited visit information and aggregate usage counts are sent only if you allow analytics.</span></p>
 
 <nav class="workflow-progress" aria-label="Scanning workflow">
   <ol>
@@ -2968,6 +2971,31 @@ function showIndexError(message) {
 
 /* ===== DOM ready: hook minor UI ===== */
 document.addEventListener("DOMContentLoaded", () => {
+  const privacyInfo = document.querySelector(".privacy-info");
+  const privacyInfoButton = document.getElementById("privacyInfoButton");
+  const setPrivacyInfoOpen = open => {
+    if (!privacyInfo || !privacyInfoButton) return;
+    privacyInfo.dataset.open = String(open);
+    privacyInfoButton.setAttribute("aria-expanded", String(open));
+  };
+  privacyInfoButton?.addEventListener("click", event => {
+    event.stopPropagation();
+    delete privacyInfo.dataset.dismissed;
+    setPrivacyInfoOpen(privacyInfo.dataset.open !== "true");
+  });
+  privacyInfo?.addEventListener("mouseleave", () => {
+    delete privacyInfo.dataset.dismissed;
+  });
+  document.addEventListener("click", event => {
+    if (!privacyInfo?.contains(event.target)) setPrivacyInfoOpen(false);
+  });
+  privacyInfo?.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    setPrivacyInfoOpen(false);
+    privacyInfo.dataset.dismissed = "true";
+    privacyInfoButton.blur();
+  });
+
   document.getElementById("issueFilters").addEventListener("change", renderIssueChecklist);
   document.getElementById("startAfresh").onclick = startAfresh;
   document.getElementById("openInstructions").onclick = () => {
