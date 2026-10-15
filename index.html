@@ -392,7 +392,7 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
 
 <div class="row setup-row">
   <!-- Answer Key -->
-  <section id="answerKeyStep" class="card setup-card workflow-stage" data-workflow-stage="2">
+  <section id="answerKeyStep" class="card setup-card workflow-stage" data-workflow-stage="2" hidden>
     <h2 class="step-heading" tabindex="-1"><span class="step-number">2</span> Set the answer key</h2>
     <div class="small" style="margin-top:6px">
       Enter the correct answers, choose the number of questions, then click <strong>Save answer key</strong>. Use <strong>X</strong> to void a question; it is excluded from scores and the maximum mark.
@@ -415,7 +415,7 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
     <div class="workflow-nav"><button type="button" data-workflow-back="1">Back to students</button><button type="button" class="primary" data-workflow-next="3">Continue to PDFs</button></div>
   </section>
 
-  <section id="uploadStep" class="card upload-card workflow-stage" data-workflow-stage="3">
+  <section id="uploadStep" class="card upload-card workflow-stage" data-workflow-stage="3" hidden>
     <h2 class="step-heading" tabindex="-1"><span class="step-number">3</span> Upload answer sheets</h2>
     <p class="small" style="margin:6px 0 0">Select or drop your scanned PDF files below, then click <strong>Process PDFs</strong>. Files are read locally; their contents are not uploaded to a server.</p>
     <div id="drop" class="drop" role="button" tabindex="0" aria-label="Choose PDF answer sheets or drag and drop them here" aria-describedby="uploadHelp uploadFeedback">
@@ -465,7 +465,7 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
 </div>
 
   <!-- Results -->
-  <section id="reviewStep" class="card review-card workflow-section workflow-stage" data-workflow-stage="4">
+  <section id="reviewStep" class="card review-card workflow-section workflow-stage" data-workflow-stage="4" hidden>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
       <h2 class="step-heading" tabindex="-1"><span class="step-number">4</span> Review student sheets</h2>
       <span class="small">Detected responses: <code>filename;ID;answers...</code></span>
@@ -561,7 +561,7 @@ button, a.button, .link-pill { min-height:30px; padding:5px 9px; font-size:12px;
   <!-- Controls + Preview -->
   <!-- Controls + Preview card removed -->
 
-<section id="resultsSection" class="card all-results workflow-stage" data-workflow-stage="5" style="margin-top:16px">
+<section id="resultsSection" class="card all-results workflow-stage" data-workflow-stage="5" style="margin-top:16px" hidden>
   <h2 class="step-heading" tabindex="-1"><span class="step-number">5</span> Analyze and export results</h2>
   <p class="small">Review question performance by class, compare class averages, edit student results, and export graded results. Saved edits update the review section automatically.</p>
   <div id="resultsEmpty" class="stage-empty"><strong>Results will appear here</strong><span>Process at least one answer sheet to unlock question analysis, class performance and exports.</span></div>
