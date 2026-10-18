@@ -110,12 +110,11 @@
       .analytics-consent{position:fixed;z-index:2000;left:18px;right:18px;bottom:18px;max-width:720px;margin:auto;padding:16px 18px;border:1px solid #64676a;border-radius:8px;background:#33373b;color:#fff;box-shadow:0 18px 50px #0008;font:14px/1.5 "Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif}
       .analytics-consent strong{display:block;margin-bottom:4px;font-family:"Space Grotesk","Montserrat",system-ui,sans-serif}.analytics-consent p{margin:0;color:#ebebeb}
       .analytics-consent-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
-      .analytics-consent button,.analytics-privacy-button{border:1px solid #8d8f91;border-radius:7px;padding:8px 12px;background:#24272b;color:#fff;font:600 13px "Montserrat",system-ui,sans-serif;cursor:pointer}
+      .analytics-consent button{border:1px solid #8d8f91;border-radius:7px;padding:8px 12px;background:#24272b;color:#fff;font:600 13px "Montserrat",system-ui,sans-serif;cursor:pointer}
       .analytics-consent button[data-consent=granted]{border-color:#75f8cc;background:#75f8cc;color:#33373b}
-      .analytics-consent button:focus-visible,.analytics-privacy-button:focus-visible{outline:3px solid rgba(117,248,204,.5);outline-offset:2px}
-      .analytics-privacy-button{position:fixed;z-index:900;left:12px;bottom:12px;padding:6px 9px;background:#33373be6;color:#fff;font-size:11px}
+      .analytics-consent button:focus-visible{outline:3px solid rgba(117,248,204,.5);outline-offset:2px}
       @media(max-width:520px){.analytics-consent{left:12px;right:12px;bottom:12px;padding:14px}.analytics-consent-actions button{flex:1}}
-      @media print{.analytics-consent,.analytics-privacy-button{display:none!important}}
+      @media print{.analytics-consent{display:none!important}}
     `;
     document.head.appendChild(style);
   }
@@ -147,12 +146,6 @@
   function initializeConsentUi() {
     if (!analyticsEnabled) return;
     addConsentStyles();
-    const privacyButton = document.createElement("button");
-    privacyButton.type = "button";
-    privacyButton.className = "analytics-privacy-button";
-    privacyButton.textContent = "Privacy choices";
-    privacyButton.addEventListener("click", showConsentDialog);
-    document.body.appendChild(privacyButton);
     if (consent === "granted") initializeGoogleAnalytics();
     else if (consent !== "denied") showConsentDialog();
   }

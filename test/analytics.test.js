@@ -83,7 +83,7 @@ test("rejects page paths containing query data", () => {
 });
 
 test("loads GA only on the production hostname and sends one sanitized page view", () => {
-  const { context, headChildren } = runClientAnalytics("markscan.string.sg");
+  const { context, headChildren, bodyChildren } = runClientAnalytics("markscan.string.sg");
   const calls = context.window.dataLayer.map((entry) => Array.from(entry));
   const config = calls.find(([command]) => command === "config");
   const pageView = calls.find(([command, eventName]) => command === "event" && eventName === "page_view");
@@ -96,6 +96,7 @@ test("loads GA only on the production hostname and sends one sanitized page view
     page_path: "/scan"
   });
   assert.equal(headChildren.filter((element) => element.tagName === "SCRIPT").length, 1);
+  assert.equal(bodyChildren.length, 0);
 });
 
 test("does not initialize or send events from Vercel preview hosts", () => {
